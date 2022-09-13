@@ -13,4 +13,7 @@ Then it compare the existing packages in unity's cache and the ones in your proj
 - only projects opened with unity hub will be checked
 - old projects may be ignored if they do are no longer in the logs
 - both 'cache/packages' and 'cache/npm' are cleared
-- made with Qt Creator  6.0.2
+- made with :
+	+ Qt Creator 6.0.2
+	+ Qt Src 6.2.3
+	+ msvc2019_64
