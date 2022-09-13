@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    setWindowTitle("UnityPackagesCleaner");
+
     projects = new UnityProjectsFinder(this, ui->logger);
     packages = new UnityPackagesFinder(this, ui->logger);
 

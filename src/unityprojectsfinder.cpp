@@ -102,9 +102,12 @@ QStringList UnityProjectsFinder::FindProjectsPathInLog(QFileInfo logFile)
 
             projectPath = CleanupPath(projectPath);
 
-            projectsPathList.append(projectPath);
+            if(!projectsPathList.contains(projectPath))
+            {
+                projectsPathList.append(projectPath);
 
-            output->append("found reference to unity project at path : " + projectPath);
+                output->append("found reference to unity project at path : " + projectPath);
+            }
         }
     }
 
