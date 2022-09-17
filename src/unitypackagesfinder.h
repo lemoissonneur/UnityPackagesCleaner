@@ -1,11 +1,12 @@
 #ifndef UNITYPACKAGESFINDER_H
 #define UNITYPACKAGESFINDER_H
 
+#include "unity.h"
+
 #include <QObject>
 #include <QTextBrowser>
 #include <QDir>
 
-#include "unity.h"
 
 class UnityPackagesFinder : public QObject
 {

@@ -1,13 +1,14 @@
 #ifndef UNITYPROJECTSFINDER_H
 #define UNITYPROJECTSFINDER_H
 
+#include "unity.h"
+
 #include <QObject>
 #include <QTextBrowser>
 #include <QString>
 #include <QFile>
 #include <QDir>
 
-#include "unity.h"
 
 class UnityProjectsFinder : public QObject
 {

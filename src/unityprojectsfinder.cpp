@@ -10,34 +10,47 @@ UnityProjectsFinder::UnityProjectsFinder(QObject *parent, QTextBrowser* output)
     : QObject{parent}
 {
     this->output = output;
-    FindProjects();
 }
 
 bool UnityProjectsFinder::FindProjects()
 {
-    QStringList projectsPathList = QStringList();
-
-    // get unity hub log folder path
-    QString hubLogFolderPath = QStandardPaths::standardLocations(QStandardPaths::StandardLocation::AppDataLocation)[0];
-    hubLogFolderPath.replace("UnityPackagesCleaner", "UnityHub/logs");
-
     output->append("------------------------------------------------------------");
     output->append("STEP 1 : looking for unity project paths from Unity Hub logs");
     output->append("------------------------------------------------------------");
-    output->append("Unity Hub log foler path : " + hubLogFolderPath);
 
+    // get unity hub log folder path
+    QStringList stdPaths = QStandardPaths::standardLocations(QStandardPaths::StandardLocation::AppDataLocation);
+    if(stdPaths.count() <= 0)
+    {
+        output->append("Cant' find unity hub log folder, QStandardPaths::standardLocations return emmpty list");
+        return false;
+    }
 
-    // get all log files in the log folder
+    QString hubLogFolderPath = stdPaths[0].replace("UnityPackagesCleaner", "UnityHub/logs");
+
+    // check log folder
     QDir hubLogFolder = QDir(hubLogFolderPath);
+    if(!hubLogFolder.exists() || !hubLogFolder.isReadable())
+    {
+        output->append("Cant' find/read unity hub log folder, expected path : " + hubLogFolderPath);
+        return false;
+    }
+
+    output->append("Unity Hub log folder path : " + hubLogFolderPath);
+
+    // list all log  files
     hubLogFolder.setNameFilters(QStringList("*log*.json"));
     hubLogFolder.setFilter(QDir::Files | QDir::Readable);
 
     QList<QFileInfo> hubLogFiles = hubLogFolder.entryInfoList();
-
-    //qDebug() << "Unity Hub log files : " << hubLogFiles;
-
+    if(hubLogFiles.isEmpty())
+    {
+        output->append("no logs found");
+        return false;
+    }
 
     // search for project path in each log file
+    QStringList projectsPathList = QStringList();
     foreach(QFileInfo logFile, hubLogFiles)
     {
         output->append("found log file : " + logFile.absoluteFilePath());
@@ -47,10 +60,16 @@ bool UnityProjectsFinder::FindProjects()
     // clean for duplicate
     projectsPathList.removeDuplicates();
 
+    if(projectsPathList.isEmpty())
+    {
+        output->append("no projects found");
+        return false;
+    }
+
     output->append("\n\n\n");
-    output->append("-------------------------------------------------------------");
-    output->append("STEP 2 : extract packages dependencies from existing projects");
-    output->append("-------------------------------------------------------------");
+    output->append("------------------------------------------------------------");
+    output->append("STEP 2 : extract package dependencies from existing projects");
+    output->append("------------------------------------------------------------");
 
     // clean non-existing folder or folder that doesn't contains a packages-lock.json
     foreach(QString s, projectsPathList)
@@ -67,6 +86,7 @@ bool UnityProjectsFinder::FindProjects()
                 output->append("found packages-lock.json for project : " + s);
                 projects.append(UnityProject(s));
             }
+            else output->append("cant't find and/or read package-lock file for project at path : " + s);
         }
         else output->append("no project found at : " + s);
     }

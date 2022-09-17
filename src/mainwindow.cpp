@@ -14,6 +14,12 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("UnityPackagesCleaner");
 
     projects = new UnityProjectsFinder(this, ui->logger);
+    if(!projects->FindProjects())
+    {
+        ui->logger->append("ERROR: fail to find unity projects");
+        ui->deleteButton->setEnabled(false);
+        return;
+    }
     packages = new UnityPackagesFinder(this, ui->logger);
 
     ui->logger->append("\n\n\n");

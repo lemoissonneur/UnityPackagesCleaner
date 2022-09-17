@@ -1,10 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
 #include "unity.h"
 #include "unitypackagesfinder.h"
 #include "unityprojectsfinder.h"
+
+#include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
